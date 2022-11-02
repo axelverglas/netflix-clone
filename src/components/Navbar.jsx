@@ -1,22 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserAuth } from "../context/AuthContext";
 
 export default function Navbar() {
-  const { user, logOut } = UserAuth();
-  const navigate = useNavigate();
+  const { user } = UserAuth();
 
-  const handleLogout = async () => {
-    try {
-      await logOut();
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <div className="flex p-4 z-[100] w-full absolute">
+    <div
+      className={`flex p-4 z-[100] w-full fixed ${
+        isScrolled ? "bg-black" : "transparen"
+      }`}
+    >
       <Link to="/">
         <h1 className="text-red-600 text-4xl font-bold cursor-pointer mr-6">
           NETFLIX
